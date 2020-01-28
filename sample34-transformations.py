@@ -33,10 +33,14 @@ def transformation_exercise():
     # TODO the names of the columns are confusing (two id columns, but they're not matching)
     # TODO how do we solve this problem?
     #lines_df = lines_df.rdd.map(lambda x: x[0])
+    lines_df = lines_df.withColumnRenamed("name", "city_name").select("city_id", "city_name")
     left_df = cities_df.join(lines_df, cities_df.id == lines_df.city_id, "inner")
 
+
     # TODO how do you know which track is still operating?
-    tracks_df.rdd.filter(lambda x:x[4]==999999).count()
+    #tracks_df.rdd.filter(lambda x:x[4]==999999).count()
+    tracks_df.select(psf.max("closure")).distinct().show()
+
 
     # TODO filter on only the operating tracks
     filtered_df = tracks_df.filter("closure = 999999")
@@ -47,8 +51,8 @@ def transformation_exercise():
     ######
     #lines_df.flatMap(lambda x:x.lower().split(',')).map(lambda x:(x,1)).reduceByKey(add)
 
-    #joined_df.
-    #joined_df.
+    joined_df.select("city_name").distinct().count()
+    joined_df.select("city_name").distinct().show(40)
 
 if __name__ == "__main__":
     transformation_exercise()
